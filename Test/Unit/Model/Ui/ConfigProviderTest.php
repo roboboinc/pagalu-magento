@@ -3,10 +3,10 @@
  * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
-namespace Magento\SamplePaymentGateway\Test\Unit\Model\Ui;
+namespace Magento\PagaLuPaymentGateway\Test\Unit\Model\Ui;
 
-use Magento\SamplePaymentGateway\Gateway\Http\Client\ClientMock;
-use Magento\SamplePaymentGateway\Model\Ui\ConfigProvider;
+use Magento\PagaLuPaymentGateway\Gateway\Http\Client\ClientMock;
+use Magento\PagaLuPaymentGateway\Model\Ui\ConfigProvider;
 
 class ConfigProviderTest extends \PHPUnit_Framework_TestCase
 {

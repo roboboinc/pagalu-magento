@@ -3,7 +3,7 @@
  * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
-namespace Magento\SamplePaymentGateway\Model\Adminhtml\Source;
+namespace Magento\PagaLuPaymentGateway\Model\Adminhtml\Source;
 
 use Magento\Payment\Model\Method\AbstractMethod;
 

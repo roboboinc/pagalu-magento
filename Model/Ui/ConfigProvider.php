@@ -3,10 +3,10 @@
  * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
-namespace Magento\SamplePaymentGateway\Model\Ui;
+namespace Magento\PagaLuPaymentGateway\Model\Ui;
 
 use Magento\Checkout\Model\ConfigProviderInterface;
-use Magento\SamplePaymentGateway\Gateway\Http\Client\ClientMock;
+use Magento\PagaLuPaymentGateway\Gateway\Http\Client\ClientMock;
 
 /**
  * Class ConfigProvider
