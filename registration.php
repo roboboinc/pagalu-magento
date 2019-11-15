@@ -6,6 +6,6 @@
 
 \Magento\Framework\Component\ComponentRegistrar::register(
     \Magento\Framework\Component\ComponentRegistrar::MODULE,
-    'PagaLu_Payment',
+    'Magento_SamplePaymentGateway',
     __DIR__
 );
