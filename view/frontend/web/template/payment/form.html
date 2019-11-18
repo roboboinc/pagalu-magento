@@ -10,9 +10,7 @@
                name="payment[method]"
                class="radio"
                data-bind="attr: {'id': getCode()}, value: getCode(), checked: isChecked, click: selectPaymentMethod, visible: isRadioButtonVisible()"/>
-        <label class="label" data-bind="attr: {'for': getCode()}">
-            <span data-bind="text: getTitle()"></span>
-        </label>
+        <label data-bind="attr: {'for': getCode()}" class="label"><span data-bind="text: getTitle()"></span></label>
     </div>
 
     <div class="payment-method-content">
@@ -25,11 +23,11 @@
             <!--/ko-->
         </div>
 
-        <div class="field required">
-            <label data-bind="attr: {for: getCode() + '_transaction_result'}" class="label">
-                <span><!-- ko i18n: 'Transaction Result'--><!-- /ko --></span>
-            </label>
+<!--        <div class="field required">-->
+<!--            <label data-bind="attr: {for: getCode() + '_transaction_result'}" class="label">-->
+<!--            </label>-->
 
+<!--
             <div class="control">
                 <select name="payment[transaction_result]"
                         class="select"
@@ -42,6 +40,7 @@
                 </select>
             </div>
         </div>
+-->
 
         <div class="actions-toolbar">
             <div class="primary">

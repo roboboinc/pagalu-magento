@@ -1,6 +1,6 @@
 {
-    "name": "magento/module-sample-payment-gateway",
-    "description": "Demonstrates integration with payment gateway",
+    "name": "magento/module-pagalu-payment-gateway",
+    "description": "PagaLu integration with payment gateway",
     "require": {
         "php": "~5.5.0|~5.6.0|~7.0.0",
         "magento/module-sales": "100.0.*",

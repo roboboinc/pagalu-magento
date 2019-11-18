@@ -6,15 +6,20 @@
 /*global define*/
 define(
     [
-        'Magento_Checkout/js/view/payment/default'
+        'Magento_Checkout/js/view/payment/default',
+        'mage/url'
     ],
-    function (Component) {
+    function (Component, urlBuilder) {
         'use strict';
 
         return Component.extend({
             defaults: {
                 template: 'Magento_PagaLuPaymentGateway/payment/form',
-                transactionResult: ''
+                redirectAfterPlaceOrder: false
+            },
+            afterPlaceOrder: function(url) {
+//                console.log(urlBuilder.build('pagalu/payment/redirect/'));
+                window.location.replace(urlBuilder.build('pagalu/payment/redirect/'));
             },
 
             initObservable: function () {

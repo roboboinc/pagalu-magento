@@ -1,0 +1,11 @@
+
+<form id="redirect_form" action="<?php echo $this->getPostUrl(); ?>" method="POST">
+
+    <input type="hidden" name="test" value="hello" />
+
+    <p><?php echo __("You are transferred to PagaLu's secure payment environment. <input type='submit' value='Click here'> if you are not automatically transferred."); ?>
+</form>
+
+<script type="text/javascript">
+document.getElementById("redirect_form").submit();
+</script>

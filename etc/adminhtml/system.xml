@@ -44,6 +44,19 @@
                     <label>Sort Order</label>
                     <frontend_class>validate-number</frontend_class>
                 </field>
+
+                <field id="confirm" translate="confirm URL" sortOrder="8" type="text" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Confirm URL</label>
+                </field>
+
+                <field id="cancel" translate="cancel URL" sortOrder="8" type="text" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Cancel URL</label>
+                </field>
+
+                <field id="post_url" translate="label comment" sortOrder="400" type="text" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Post Url</label>
+                </field>
+
             </group>
         </section>
     </system>

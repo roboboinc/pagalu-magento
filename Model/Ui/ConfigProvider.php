@@ -15,6 +15,13 @@ final class ConfigProvider implements ConfigProviderInterface
 {
     const CODE = 'sample_gateway';
 
+    protected $_helper;
+
+    public function __construct(
+        \Magento\PagaLuPaymentGateway\Helper\Data $helper
+    ) {
+        $this->_helper = $helper;
+    }
     /**
      * Retrieve assoc array of checkout configuration
      *
