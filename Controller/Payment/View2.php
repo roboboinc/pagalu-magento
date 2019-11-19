@@ -23,7 +23,7 @@ class View2 extends \Magento\Framework\App\Action\Action
     {
        $this->resultJsonFactory = $resultJsonFactory;
        parent::__construct($context);
-       $this->$helper = $_helper;
+       $this->helper = $_helper;
       
       }
 
@@ -31,14 +31,40 @@ class View2 extends \Magento\Framework\App\Action\Action
      * View  page action
      *
      * @return \Magento\Framework\Controller\ResultInterface
-     */public
+     */
     public function execute()
     {
 
-       
-       $result = $this->resultJsonFactory->create();
-       $data = ['message' => $this->helper->processPagaluPayment()];
 
-        return $result->setData($data);
+       $message = $this->current_url();
+
+       $success = $this->success_url();
+
+       $failure = $this->failure_url();
+       $result = $this->resultJsonFactory->create();
+       //$data = ['message' => str($this->helper->processPagaluPayment())];
+        $data = ['message' => $message];
+        $data = ['success_url' => $success];
+        $data = ['failure_url' => $failure];
+      return $result->setData($data);
     }
+
+function current_url()
+{
+    $url      = "http://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+    $validURL = str_replace("&", "&amp", $url);
+    $ph =  basename($url);
+    $path = str_replace($ph,"", $url); // outputs Hello Dolly!
+
+    return $path;
+}
+
+function success_url(){
+
+   return $this->current_url().'success';
+}
+
+function failure_url(){
+   return $this->current_url().'failure';
+}
 }

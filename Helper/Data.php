@@ -9,19 +9,22 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
     public $modelOrder;
     public $cart;
     protected $_objectManager;
+    protected $_curl;
 
     public function __construct(
         \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
         \Magento\Sales\Api\Data\OrderInterface $order,
         \Magento\Sales\Model\Order $modelOrder,
         \Magento\Checkout\Model\Cart $cart,
-        \Magento\Framework\ObjectManagerInterface $_objectManager
+        \Magento\Framework\ObjectManagerInterface $_objectManager,
+        \Magento\Framework\HTTP\Client\Curl $curl
     ) {
         $this->order            = $order;
         $this->modelOrder = $modelOrder;
         $this->cart             = $cart;
         $this->scopeConfig      = $scopeConfig;
         $this->_objectManager   = $_objectManager;
+        $this->_curl = $curl;
     }
 
     public function getPostData()
@@ -174,41 +177,15 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
        // }
 
 
-        $ch = curl_init();
+        //$ch = curl_init();
         $params = json_encode($params); // Json encodes $params array
-        $authorization = "Authorization: Bearer ";
-        $authorization .=  '5xBCgKMv8WMxJUo4PXwlfjTqISuosu';
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json' , $authorization ));
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_URL, 'http://sandbox.pagalu.co.mz/pagamento-ext/api/pay-ext/');
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
-        // receive server response ...
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-        $server_output = curl_exec ($ch);
         
-        //close connection
-        curl_close ($ch);
-        flush();
+        $this->_curl->addHeader("Authorization: Bearer 5xBCgKMv8WMxJUo4PXwlfjTqISuosu");
+        $this->_curl->addHeader("Content-Type", "application/json");
+        $this->_curl->post('http://sandbox.pagalu.co.mz/pagamento-ext/api/pay-ext/', $params);
 
-        $json = json_decode($server_output, true);
-            // further processing ....
-            if (json_last_error() == JSON_ERROR_NONE) {
-                // SUccess Redirect to PagaLu
-//                echo wpautop( wptexturize( $json['response_url'] ) );
-                $json_url = $json['response_url'];
-//                wp_redirect("$json_url"); //Redirect to PagaLU
-              /*  return array(
-                'result'   => 'success',
-                'redirect' => $json_url
-                );*/
+        $response = $this->_curl->getBody();
 
-                $redirect_url_ = $json_url;
-            } else {
-
-                $redirect_url_ = 'www.google.com';
-            }
-            return $redirect_url_;
+        return $response;
     }   
 }
