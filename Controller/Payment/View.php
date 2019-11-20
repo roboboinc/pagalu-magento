@@ -7,6 +7,7 @@
 namespace Magento\PagaLuPaymentGateway\Controller\Payment;
 class View extends \Magento\Framework\App\Action\Action
 {
+    protected $_helper;
     /**
      * @var \Magento\Framework\Controller\Result\JsonFactory
      */
@@ -16,21 +17,85 @@ class View extends \Magento\Framework\App\Action\Action
      * @param \Magento\Framework\Controller\Result\JsonFactory $resultJsonFactory
      */
     public function __construct(
+       \Magento\PagaLuPaymentGateway\Helper\Data $_helper,
        \Magento\Framework\App\Action\Context $context,
+        \Magento\Framework\Controller\Result\RedirectFactory $resultRedirectFactory,
        \Magento\Framework\Controller\Result\JsonFactory $resultJsonFactory)
     {
+       $this->_helper          = $_helper;
        $this->resultJsonFactory = $resultJsonFactory;
+        $this->resultRedirectFactory = $resultRedirectFactory;
        parent::__construct($context);}
     /**
      * View  page action
      *
      * @return \Magento\Framework\Controller\ResultInterface
      */
+
+    // get REDIRECT URL FROM PAGALU
+    public function getEndpointFromPagaLu(){
+
+        $result = $this->resultJsonFactory->create();
+       $data = $this->_helper->getPostData();   //['message' => $this->_helper->getPostData()];   //'Hello world!'
+
+        $ch = curl_init();
+        $params = json_encode($data); // Json encodes $params array
+        $authorization = "Authorization: Bearer ";
+        $authorization .=  $this->_helper->pagalu_api_key();
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json' , $authorization ));
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_URL, 'http://sandbox.pagalu.co.mz/pagamento-ext/api/pay-ext/');
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
+        // receive server response ...
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $server_output = curl_exec ($ch);
+        //close connection
+        curl_close ($ch);
+        flush();
+
+        $json = json_decode($server_output, true);
+        echo $server_output;
+
+        try{
+            if (json_last_error() == JSON_ERROR_NONE) {
+                // SUccess return Redirect to PagaLu
+                $json_url = $json['response_url'];
+
+                $resultRedirect = $this->resultRedirectFactory->create();
+                $resultRedirect->setUrl($json_url);
+
+                return $json_url;
+    //            return $result->setData(
+    //            ['result'   => 'success',
+    //            'server_output' => $server_output,
+    //            'redirect' => $json_url]
+    //            );
+            } else {
+                //return FAIL URL internally
+                // TODO: Fix handling failure
+                $resultRedirect = $this->resultRedirectFactory->create();
+                $resultRedirect->setUrl('/pagalu/payment/failure/');
+
+                return $resultRedirect;
+    //                $result->setData(
+    //            ['result'   => 'fail',
+    //            'server_output' => $server_output]
+    //            );
+            }
+        } catch (exception $e) {
+            //In Case Auth details are not provided
+            $resultRedirect = $this->resultRedirectFactory->create();
+                $resultRedirect->setUrl('/pagalu/payment/failure/');
+        }
+    }
+
     public function execute()
     {
-       $result = $this->resultJsonFactory->create();
-       $data = ['message' => 'Hello world!'];
+        $result = $this->resultJsonFactory->create();
+       $data = ['url' => $this->getEndpointFromPagaLu()];
 
         return $result->setData($data);
+
     }
 }

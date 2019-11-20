@@ -30,7 +30,7 @@ class Success extends \Magento\Framework\App\Action\Action
             $postData = $this->getRequest()->getPostValue();
 
             // if data looks fine
-            if (isset($postData['orderid']) && isset($postData['paymentRef'])) {
+//            if (isset($postData['orderid']) && isset($postData['paymentRef'])) {
 
                 // get object manager
                 $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
@@ -48,9 +48,9 @@ class Success extends \Magento\Framework\App\Action\Action
 
                 // redirect to success page
                 $this->_redirect('checkout/onepage/success');
-            } else {
-                $this->_redirect('/');
-            }
+//            } else {
+//                $this->_redirect('/');
+//            }
         } catch (Exception $e) {
             echo $e;
         }
