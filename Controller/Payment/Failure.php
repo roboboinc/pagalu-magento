@@ -20,6 +20,8 @@ class Failure extends \Magento\Framework\App\Action\Action
 
     public function execute()
     {
+        // TEMP Redirect
+        $this->_redirect('/');
 
         try {
             $postData = $this->getRequest()->getPostValue();
