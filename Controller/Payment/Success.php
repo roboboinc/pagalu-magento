@@ -33,29 +33,31 @@ class Success extends \Magento\Framework\App\Action\Action
 
     public function execute()
     {
-        // try {
-        //     // parse GET data
-        //     $order_id = $this->request->getParams();
-        //     $order_id = (int) $order_id['order_id'];
+        try {
+            // parse GET data
+            $parameters = $this->request->getParams();
+            $payment_uuid = $parameters['payment_uuid'];
 
-        //     if (isset($order_id)) {
-        //         $this->_order->loadByIncrementId($order_id);
-        //         $this->_order->setState($this->_order->getState())->save();
-        //         $this->_order->setStatus('complete')->save();
-        //         $this->_order->addStatusToHistory($this->_order->getStatus(), __('Payment successful. Transaction ID: '))->save();
-        //         $this->_order->save();
-        //         $this->_redirect('checkout/onepage/success');
-        //     } else {
-        //         $this->_redirect('/');
-        //     }
-        // } catch (Exception $e) {
-        // 	echo $e;
-        // }
-
-        $this->updateTransactionOnPagalu();
+            if (isset($payment_uuid)) {
+                $this->getTransactionStatusOnPagalu($payment_uuid);
+            }else {
+                $this->_redirect('/');
+            }
+        } catch (Exception $e) {
+        	echo $e;
+        }
     }
 
-    public function updateTransactionOnPagalu($payment_uuid='fb67d2e0-6702-4dd6-ac34-09387fd7eb6a') {
+    public function updateTransactionOnMagento($order_id=1){
+        $this->_order->loadByIncrementId($order_id);
+        $this->_order->setState($this->_order->getState())->save();
+        $this->_order->setStatus('complete')->save();
+        $this->_order->addStatusToHistory($this->_order->getStatus(), __('Payment successful. Transaction ID: '))->save();
+        $this->_order->save();
+        $this->_redirect('checkout/onepage/success');
+    }
+
+    public function getTransactionStatusOnPagalu($payment_uuid='') {
         $ch = curl_init();
         $authorization = "Authorization: Bearer jM5RnJbV3604p5DamkuUvVIQSIepsv";
         curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json' , $authorization ));
@@ -70,15 +72,14 @@ class Success extends \Magento\Framework\App\Action\Action
         curl_close ($ch);
         flush();
 
-        $json = json_encode($server_output);
+        $json = json_decode($server_output, true);
 
         if (json_last_error() == JSON_ERROR_NONE) {
             if(isset($json['status'])){
-                $order_id = $json['reference'];
-
-                echo $order_id;
+                $order_id = (int)$json['reference'];
+                $this->updateTransactionOnMagento($order_id);
             }else {
-                echo "Nao tem status? ".$json;
+                echo "Nao tem status: ".$json;
             }
 
         }else {
