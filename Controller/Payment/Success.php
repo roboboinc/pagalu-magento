@@ -23,7 +23,7 @@ class Success extends \Magento\Framework\App\Action\Action
     ) {
         $this->_invoiceService = $_invoiceService;
         $this->transaction    = $transaction;
-        $this->order          = $order;
+        $this->_order          = $order;
         $this->context         = $context;
         $this->request = $request;
         $this->transactionRepository = $transactionRepository;
@@ -34,7 +34,8 @@ class Success extends \Magento\Framework\App\Action\Action
     {
         try {
             // parse GET data
-            $order_id = $this->request->getRequest()->getParams('order_id');
+            $order_id = $this->request->getParams();
+            $order_id = (int) $order_id['order_id'];
 
             if (isset($order_id)) {
                 $this->_order->loadByIncrementId($order_id);
