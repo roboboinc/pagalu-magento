@@ -11,6 +11,23 @@ Payment Gateway integration in Magento 2 stores. After launching the new payment
 Obtain Pagalu Token first for your environment by reaching out to team [at] robobo [dot] org
 
 
+### Installation instructions:
+
+    The plugin can be installed from the master branch on the following location (github): https://github.com/roboboinc/pagalu-magento
+    One of the simplest form of setting up the current version is to:
+        git clone the repository inside {magento_root_directory}/app/code/magento/
+        Rename the directory to PagaLuPaymentGateway
+        Run: bin/magento setup:upgrade
+    The plugin should now be installed and you can move onto the admin page of your magento shop and enter the PagaLu Token provided by going to:
+        Stores > Configuration > Sales > Payment Methods
+        PagaLu Gateway should show under Other Payment Methods
+        Ensure it is set Enabled (Yes)
+        Enter the PagaLu API Key  Provided
+        Ensure that Debug is set to Yes (the API Key provided only works on Sandbox environment)
+        Save Config
+
+With these steps, it should be possible to go and start testing making purchases. 
+
 ## Step 1: Create payment method module
 TO BE UPDATED...
 
