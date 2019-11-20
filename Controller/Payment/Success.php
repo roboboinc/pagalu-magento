@@ -32,27 +32,23 @@ class Success extends \Magento\Framework\App\Action\Action
 
     public function execute()
     {
-        return $this->_redirect('/');
         try {
             // parse GET data
             $order_id = $this->request->getParam('order_id');
-            echo $order_id;
 
-            // TODO: Implement request from PagaLu to get status
-            $order = $this->order;
+            $this->order->loadByIncrementId($order_id);
+            $this->order->setState($this->order->getState())->save();
+            $this->order->setStatus('complete')->save();
+            $this->order->addStatusToHistory($this->order->getStatus(), __('Payment successful. Transaction ID: '))->save();
+            $this->order->save();
 
-            // get object manager
-            $order->setState(Order::STATE_PROCESSING)
-							->setStatus($order->getConfig()->getStateDefaultStatus(Order::STATE_PROCESSING));
+            // send order email
+            $emailSender = $objectManager->create('\Magento\Sales\Model\Order\Email\Sender\OrderSender');
+            $emailSender->send($this->order);
 
-							$transaction = $this->transactionRepository->getByTransactionId(
-									"-1",
-									$payment->getId(),
-									$order->getId()
-							);
-
-            } catch (Exception $e) {
-            echo $e;
+            $this->_redirect('checkout/onepage/success');
+        } catch (Exception $e) {
+        echo $e;
         }
 
 //        try {
