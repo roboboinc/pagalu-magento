@@ -36,7 +36,7 @@ class View extends \Magento\Framework\App\Action\Action
     public function getEndpointFromPagaLu(){
 
         $result = $this->resultJsonFactory->create();
-       $data = $this->_helper->getPostData();   //['message' => $this->_helper->getPostData()];   //'Hello world!'
+        $data = $this->_helper->getPostData();   //['message' => $this->_helper->getPostData()];   //'Hello world!'
 
         $ch = curl_init();
         $params = json_encode($data); // Json encodes $params array
