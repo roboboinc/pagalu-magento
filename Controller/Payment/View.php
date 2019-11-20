@@ -55,22 +55,14 @@ class View extends \Magento\Framework\App\Action\Action
         flush();
 
         $json = json_decode($server_output, true);
-        echo $server_output;
 
         try{
             if (json_last_error() == JSON_ERROR_NONE) {
                 // SUccess return Redirect to PagaLu
                 $json_url = $json['response_url'];
 
-                $resultRedirect = $this->resultRedirectFactory->create();
-                $resultRedirect->setUrl($json_url);
-
                 return $json_url;
-    //            return $result->setData(
-    //            ['result'   => 'success',
-    //            'server_output' => $server_output,
-    //            'redirect' => $json_url]
-    //            );
+
             } else {
                 //return FAIL URL internally
                 // TODO: Fix handling failure
@@ -78,10 +70,7 @@ class View extends \Magento\Framework\App\Action\Action
                 $resultRedirect->setUrl('/pagalu/payment/failure/');
 
                 return $resultRedirect;
-    //                $result->setData(
-    //            ['result'   => 'fail',
-    //            'server_output' => $server_output]
-    //            );
+
             }
         } catch (exception $e) {
             //In Case Auth details are not provided
@@ -93,7 +82,7 @@ class View extends \Magento\Framework\App\Action\Action
     public function execute()
     {
         $result = $this->resultJsonFactory->create();
-       $data = ['url' => $this->getEndpointFromPagaLu()];
+        $data = ['url' => $this->getEndpointFromPagaLu()];
 
         return $result->setData($data);
 
