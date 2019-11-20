@@ -12,6 +12,8 @@ use Magento\Quote\Api\Data\PaymentInterface;
 
 class DataAssignObserver extends AbstractDataAssignObserver
 {
+
+    protected $STATE_PENDING_PAYMENT = 'pending';
     /**
      * @param Observer $observer
      * @return void
@@ -23,11 +25,17 @@ class DataAssignObserver extends AbstractDataAssignObserver
 
         $paymentInfo = $method->getInfoInstance();
 
-        if ($data->getDataByKey('transaction_result') !== null) {
-            $paymentInfo->setAdditionalInformation(
+        $paymentInfo->setAdditionalInformation(
                 'transaction_result',
-                $data->getDataByKey('transaction_result')
+                $this->STATE_PENDING_PAYMENT
             );
-        }
+//        $stateObject->setStatus('pending_payment');
+
+//        if ($data->getDataByKey('transaction_result') !== null) {
+//            $paymentInfo->setAdditionalInformation(
+//                'transaction_result',
+//                $data->getDataByKey('transaction_result')
+//            );
+//        }
     }
 }
