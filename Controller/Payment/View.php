@@ -59,9 +59,11 @@ class View extends \Magento\Framework\App\Action\Action
         try{
             if (json_last_error() == JSON_ERROR_NONE) {
                 // SUccess return Redirect to PagaLu
-                $json_url = $json['response_url'];
+                echo "Passa";
 
-                return $json_url;
+                // $json_url = $json;
+
+                // return $json_url;
 
             } else {
                 //return FAIL URL internally
