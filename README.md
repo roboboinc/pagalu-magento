@@ -28,6 +28,9 @@ Obtain Pagalu Token first for your environment by reaching out to team [at] robo
 
 With these steps, it should be possible to go and start testing making purchases. 
 
+Developed and tested against Magento ver. 2.3.3
+
+
 ## Step 1: Create payment method module
 TO BE UPDATED...
 
