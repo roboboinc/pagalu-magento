@@ -12,6 +12,7 @@ use Magento\Payment\Model\Method\Logger;
 class ClientMock implements ClientInterface
 {
     const SUCCESS = 1;
+    const PENDING = 2;
     const FAILURE = 0;
 
     /**
@@ -19,6 +20,7 @@ class ClientMock implements ClientInterface
      */
     private $results = [
         self::SUCCESS,
+        self::PENDING,
         self::FAILURE
     ];
 

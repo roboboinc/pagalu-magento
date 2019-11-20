@@ -24,15 +24,21 @@ class Redirect extends \Magento\Framework\View\Element\Template
         $this->logger           = $logger;
     }
 
-    // get POST data
+    // get POST data UNUSED: Cleanup
     public function getPostData()
     {
         return $this->_helper->getPostData();
     }
 
-    // get POST url
+    // get POST url UNUSED TODO: Cleanup
     public function getPostUrl()
     {
         return $this->_helper->getPostUrl();
+    }
+
+    // get POST url
+    public function getBaseUrl()
+    {
+        return $this->_helper->getBaseUrl();
     }
 }

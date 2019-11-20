@@ -63,7 +63,7 @@ class AuthorizeRequestTest extends \PHPUnit_Framework_TestCase
 
         $configMock->expects(static::once())
             ->method('getValue')
-            ->with('merchant_gateway_key', $storeId)
+            ->with('pagalu_api_key', $storeId)
             ->willReturn($merchantToken);
 
         /** @var ConfigInterface $configMock */

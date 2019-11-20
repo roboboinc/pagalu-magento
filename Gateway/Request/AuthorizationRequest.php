@@ -51,7 +51,7 @@ class AuthorizationRequest implements BuilderInterface
             'CURRENCY' => $order->getCurrencyCode(),
             'EMAIL' => $address->getEmail(),
             'MERCHANT_KEY' => $this->config->getValue(
-                'merchant_gateway_key',
+                'pagalu_api_key',
                 $order->getStoreId()
             )
         ];

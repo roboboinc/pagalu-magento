@@ -1,17 +1,35 @@
-<?php $postData = $this->getPostData(); ?>
-
-<form id="redirect_form" action="<?php echo $this->getPostUrl(); ?>" method="POST">
-    <?php foreach($postData as $postItemKey => $postItemValue) {
-    		?>
-    <input type="hidden" name="<?php echo $postItemKey; ?>" value="<?php echo $postItemValue; ?>" />
-    <?php
-    	} ?>
-    <p><?php echo __("You are transferred to PagaLu's secure payment environment. <input type='submit' value='Click here'> if you are not automatically transferred."); ?>
+<form id="redirect_form" action="<?php echo $this->getBaseUrl(); ?>" method="GET">
+    <p>"You are transferred to PagaLu's secure payment environment. <input type='submit' value='Click here'> if you are not automatically transferred."
 </form>
 
 <script type="text/javascript">
-//document.getElementById("redirect_form").submit();
 
-console.log(document.getElementById("redirect_form"));
+    function getJsonData(url, callback) {
+        let request = new XMLHttpRequest;
+        let timer = setTimeout(function() {
+            getJsonData(url, callback);
+        }, 10000);
+        request.onreadystatechange = function() {
+            if (request.readyState === 4 && request.status === 200) {
+                clearTimeout(timer);
+                return callback(JSON.parse(request.responseText));
+            }
+        }
+        request.open('GET', url);
+        request.send();
+    }
+
+    var jsonUrl = "<?php echo $this->getBaseUrl(); ?>pagalu/payment/view/";
+    var myData;
+    getJsonData(jsonUrl, function(data) {
+        myData = data;
+        redirect_url = myData.url;
+
+        // Fallback update user URL
+        var form = document.getElementById("redirect_form");
+        form.action = redirect_url;
+
+        window.location.replace(redirect_url);
+    });
 
 </script>
