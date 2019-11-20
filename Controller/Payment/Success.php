@@ -13,7 +13,7 @@ class Success extends \Magento\Framework\App\Action\Action
         \Magento\Framework\App\Action\Context $context,
         \Magento\Sales\Model\Service\InvoiceService $_invoiceService,
         \Magento\Sales\Model\Order $_order,
-        \Magento\Framework\DB\Transaction $_transaction,
+        \Magento\Framework\DB\Transaction $_transaction
     ) {
         $this->_invoiceService = $_invoiceService;
         $this->_transaction    = $_transaction;
@@ -26,33 +26,22 @@ class Success extends \Magento\Framework\App\Action\Action
     {
 
         try {
-            // get post data
-            $postData = $request->getRequest()->getParams();
+            // parse GET data
+            $order_id = $this->getRequest()->getParam('order_id');
 
-            // if data looks fine
-            // if (isset($postData['orderid']) && isset($postData['paymentRef'])) {
+            $this->_order->loadByIncrementId($order_id);
+            $this->_order->setState($this->_order->getState())->save();
+            $this->_order->setStatus('complete')->save();
+            $this->_order->addStatusToHistory($this->_order->getStatus(), __('Payment successful. Transaction ID: '))->save();
+            $this->_order->save();
 
-                // get object manager
-                $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+            // send order email
+            $emailSender = $objectManager->create('\Magento\Sales\Model\Order\Email\Sender\OrderSender');
+            $emailSender->send($this->_order);
 
-                // set order status
-                $this->_order->loadByIncrementId(settype($postData['orderid'], 'int'));
-                $this->_order->setState($this->_order->getState())->save();
-                $this->_order->setStatus('complete')->save();
-                $this->_order->addStatusToHistory($this->_order->getStatus(), __('Payment successful. Transaction ID: ') . $postData['paymentRef'])->save();
-                $this->_order->save();
-
-                // send order email
-                $emailSender = $objectManager->create('\Magento\Sales\Model\Order\Email\Sender\OrderSender');
-                $emailSender->send($this->_order);
-
-                // redirect to success page
-                $this->_redirect('checkout/onepage/success');
-            // } else {
-            //     $this->_redirect('/');
-            // }
+            $this->_redirect('checkout/onepage/success');
         } catch (Exception $e) {
-            echo $e;
+        	echo $e;
         }
     }
 }
