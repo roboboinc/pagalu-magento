@@ -5,7 +5,7 @@
  * This is a test page to debug and verify that views are accessible
  */
 namespace Magento\PagaLuPaymentGateway\Controller\Payment;
-class View extends \Magento\Framework\App\Action\Action
+class View3 extends \Magento\Framework\App\Action\Action
 {
     protected $_helper;
     /**
@@ -35,8 +35,8 @@ class View extends \Magento\Framework\App\Action\Action
     // get REDIRECT URL FROM PAGALU
     public function getEndpointFromPagaLu(){
 
-         $result = $this->resultJsonFactory->create();
-       $data = $this->_helper->getPostData();   //['message' => $this->_helper->getPostData()];   //'Hello world!'
+        $result = $this->resultJsonFactory->create();
+        $data = $this->_helper->getPostData();   //['message' => $this->_helper->getPostData()];   //'Hello world!'
 
         $ch = curl_init();
         $params = json_encode($data); // Json encodes $params array
@@ -61,7 +61,7 @@ class View extends \Magento\Framework\App\Action\Action
                 // SUccess return Redirect to PagaLu
                 $json_url = $json['response_url'];
 
-                return $json_url;
+                //return $json_url;
 
             } else {
                 //return FAIL URL internally
@@ -69,7 +69,7 @@ class View extends \Magento\Framework\App\Action\Action
                 $resultRedirect = $this->resultRedirectFactory->create();
                 $resultRedirect->setUrl('/pagalu/payment/failure/');
 
-                return $resultRedirect;
+                //return $resultRedirect;
 
             }
         } catch (exception $e) {
@@ -77,14 +77,18 @@ class View extends \Magento\Framework\App\Action\Action
             $resultRedirect = $this->resultRedirectFactory->create();
                 $resultRedirect->setUrl('/pagalu/payment/failure/');
         }
+
+        return '#';
     }
 
     public function execute()
     {
         $result = $this->resultJsonFactory->create();
-        $data = ['url' => $this->getEndpointFromPagaLu()];
+        $this->getEndpointFromPagaLu();
+       // $data = ['url' => $this->getEndpointFromPagaLu()];
 
-        return $result->setData($data);
+        return null;//$result->setData($data);
 
     }
 }
+?>

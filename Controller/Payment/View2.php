@@ -43,9 +43,9 @@ class View2 extends \Magento\Framework\App\Action\Action
        $failure = $this->failure_url();
        $result = $this->resultJsonFactory->create();
        //$data = ['message' => str($this->helper->processPagaluPayment())];
-        $data = ['message' => $message];
-        $data = ['success_url' => $success];
-        $data = ['failure_url' => $failure];
+        $data['message'] = [$message];
+        $data['success_url'] = [$success];
+        $data['failure_url'] = [$failure];
       return $result->setData($data);
     }
 

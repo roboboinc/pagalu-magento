@@ -8,7 +8,7 @@ class Success extends \Magento\Framework\App\Action\Action
 {
     public $context;
     protected $_invoiceService;
-    protected $order;
+    protected $_order;
     protected $transaction;
     protected $request;
     protected $transactionRepository;
@@ -23,7 +23,7 @@ class Success extends \Magento\Framework\App\Action\Action
     ) {
         $this->_invoiceService = $_invoiceService;
         $this->transaction    = $transaction;
-        $this->order          = $order;
+        $this->_order          = $order;
         $this->context         = $context;
         $this->request = $request;
         $this->transactionRepository = $transactionRepository;
@@ -32,13 +32,13 @@ class Success extends \Magento\Framework\App\Action\Action
 
     public function execute()
     {
-        return $this->_redirect('/');
         try {
             // parse GET data
-            $order_id = $this->getRequest()->getParams('order_id');
+            $order_id = $this->request->getParams();
+            $order_id = (int) $order_id['order_id'];
 
             if (isset($order_id)) {
-                $this->_order->loadByIncrementId(1);
+                $this->_order->loadByIncrementId($order_id);
                 $this->_order->setState($this->_order->getState())->save();
                 $this->_order->setStatus('complete')->save();
                 $this->_order->addStatusToHistory($this->_order->getStatus(), __('Payment successful. Transaction ID: '))->save();
@@ -50,35 +50,5 @@ class Success extends \Magento\Framework\App\Action\Action
         } catch (Exception $e) {
         	echo $e;
         }
-
-//        try {
-//
-//            $postData = $this->getRequest()->getPostValue();
-//
-//            // if data looks fine
-////            if (isset($postData['orderid']) && isset($postData['paymentRef'])) {
-//
-//                // get object manager
-//                $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-//
-//                // set order status
-//                $this->order->loadByIncrementId($postData['orderid']);
-//                $this->order->setState($this->order->getState())->save();
-//                $this->order->setStatus('payment_review')->save();
-//                $this->order->addStatusToHistory($this->order->getStatus(), __('Payment successful. Transaction ID: ') . $postData['paymentRef'])->save();
-//                $this->order->save();
-//
-//                // send order email
-//                $emailSender = $objectManager->create('\Magento\Sales\Model\Order\Email\Sender\OrderSender');
-//                $emailSender->send($this->order);
-//
-//                // redirect to success page
-//                $this->_redirect('checkout/onepage/success');
-////            } else {
-////                $this->_redirect('/');
-////            }
-//        } catch (Exception $e) {
-//            echo $e;
-//        }
     }
 }
