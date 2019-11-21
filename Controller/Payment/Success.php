@@ -3,10 +3,12 @@
 namespace Magento\PagaLuPaymentGateway\Controller\Payment;
 
 use Magento\Sales\Model\Order;
+use \Magento\PagaLuPaymentGateway\Helper\Data;
 
 class Success extends \Magento\Framework\App\Action\Action
 {
     public $context;
+    protected $_helper;
     protected $_invoiceService;
     protected $_order;
     protected $request;
@@ -20,8 +22,10 @@ class Success extends \Magento\Framework\App\Action\Action
         \Magento\Sales\Model\Order $order,
         \Magento\Framework\App\Request\Http $request,
         \Magento\Framework\DB\Transaction $transaction,
-        \Magento\Sales\Api\TransactionRepositoryInterface $transactionRepository
+        \Magento\Sales\Api\TransactionRepositoryInterface $transactionRepository,
+        \Magento\PagaLuPaymentGateway\Helper\Data $_helper
     ) {
+        $this->_helper         = $_helper;
         $this->_invoiceService = $_invoiceService;
         $this->_order          = $order;
         $this->context         = $context;
@@ -49,7 +53,9 @@ class Success extends \Magento\Framework\App\Action\Action
     }
 
     public function updateTransactionOnMagento($order_id=1){
-        $this->_order->loadByIncrementId($order_id);
+        $orderId = (int)$order_id;
+
+        $this->_order->loadByIncrementId($orderId);
         $this->_order->setState($this->_order->getState())->save();
         $this->_order->setStatus('complete')->save();
         $this->_order->addStatusToHistory($this->_order->getStatus(), __('Payment successful. Transaction ID: '))->save();
@@ -59,7 +65,8 @@ class Success extends \Magento\Framework\App\Action\Action
 
     public function getTransactionStatusOnPagalu($payment_uuid='') {
         $ch = curl_init();
-        $authorization = "Authorization: Bearer jM5RnJbV3604p5DamkuUvVIQSIepsv";
+        $authorization = "Authorization: Bearer ".$this->_helper->pagalu_api_key();
+
         curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json' , $authorization ));
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "GET");
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
