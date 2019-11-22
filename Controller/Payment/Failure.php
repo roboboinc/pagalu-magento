@@ -2,7 +2,7 @@
 
 namespace Magento\PagaLuPaymentGateway\Controller\Payment;
 
-class Cancel extends \Magento\Framework\App\Action\Action
+class Failure extends \Magento\Framework\App\Action\Action
 {
 
     public $context;
