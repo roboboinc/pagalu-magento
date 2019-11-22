@@ -35,13 +35,19 @@ class View extends \Magento\Framework\App\Action\Action
     // get REDIRECT URL FROM PAGALU
     public function getEndpointFromPagaLu(){
 
-         $result = $this->resultJsonFactory->create();
+        $result = $this->resultJsonFactory->create();
        $data = $this->_helper->getPostData();   //['message' => $this->_helper->getPostData()];   //'Hello world!'
 
         $ch = curl_init();
         $params = json_encode($data); // Json encodes $params array
         $authorization = "Authorization: Bearer ";
-        $authorization .=  $this->_helper->pagalu_api_key();
+        
+
+        if (!empty($this->_helper->pagalu_api_key())) {
+            $authorization .=  $this->_helper->pagalu_api_key();
+        }else{
+            $this->_redirect('/');
+        }
         curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json' , $authorization ));
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
