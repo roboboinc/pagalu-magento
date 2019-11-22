@@ -40,8 +40,14 @@ class View extends \Magento\Framework\App\Action\Action
 
         $ch = curl_init();
         $params = json_encode($data); // Json encodes $params array
-        $authorization = "Authorization: Bearer ";
-        $authorization .=  $this->_helper->pagalu_api_key();
+        $authorization = "";
+        
+
+        if (!empty($this->_helper->pagalu_api_key())) {
+            $authorization ="Authorization: Bearer ".$this->_helper->pagalu_api_key();
+        }else{
+            $this->_redirect('/');
+        }
         curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json' , $authorization ));
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -59,11 +65,9 @@ class View extends \Magento\Framework\App\Action\Action
         try{
             if (json_last_error() == JSON_ERROR_NONE) {
                 // SUccess return Redirect to PagaLu
-                echo "Passa";
+                $json_url = $json['response_url'];
 
-                // $json_url = $json;
-
-                // return $json_url;
+                return $json_url;
 
             } else {
                 //return FAIL URL internally
