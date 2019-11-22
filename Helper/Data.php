@@ -108,10 +108,10 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
 
 
         // get Success url concat the orderID in GET
-        $success_url = $this->getBaseUrl().'pagalu/payment/success'.'/?order_id='.$orderId;
+        $success_url = $this->getBaseUrl().'pagalu/payment/success'.'/?payment_uuid='.$orderId;
 
         // get Reject url concat the orderID in GET
-        $reject_url = $this->getBaseUrl().'pagalu/payment/failure'.'/?order_id='.$orderId;
+        $reject_url = $this->getBaseUrl().'pagalu/payment/failure'.'/?payment_uuid='.$orderId;
 
 
         // get customer's email
