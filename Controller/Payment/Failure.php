@@ -8,6 +8,7 @@ class Failure extends \Magento\Framework\App\Action\Action
     public $context;
     protected $_helper;
     protected $_invoiceService;
+    protected $_curl;
     protected $_order;
     protected $request;
     protected $transaction;
@@ -21,18 +22,20 @@ class Failure extends \Magento\Framework\App\Action\Action
         \Magento\Framework\App\Request\Http $request,
         \Magento\Framework\DB\Transaction $transaction,
         \Magento\Sales\Api\TransactionRepositoryInterface $transactionRepository,
-        \Magento\PagaLuPaymentGateway\Helper\Data $_helper
+       \Magento\Framework\HTTP\Client\Curl $curl,
+       \Magento\PagaLuPaymentGateway\Helper\Data $_helper
     ) {
-        $this->_helper         = $_helper;
-        $this->_invoiceService = $_invoiceService;
-        $this->_order          = $order;
-        $this->context         = $context;
-        $this->request         = $request;
-        $this->transaction     = $transaction;
+        $this->_invoiceService      = $_invoiceService;
+        $this->_order               = $order;
+        $this->_helper              = $_helper;
+        $this->_curl                = $curl;
+        $this->context              = $context;
+        $this->request              = $request;
+        $this->transaction          = $transaction;
         $this->transactionRepository = $transactionRepository;
         parent::__construct($context);
     }
-
+    
     public function execute()
     {
         try {
@@ -62,34 +65,49 @@ class Failure extends \Magento\Framework\App\Action\Action
     }
 
     public function getTransactionStatusOnPagalu($payment_uuid='') {
-        $ch = curl_init();
-        $authorization = "Authorization: Bearer ".$this->_helper->pagalu_api_key();
-
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json' , $authorization ));
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "GET");
-        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
-        curl_setopt($ch, CURLOPT_POSTREDIR, 3);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_URL, 'http://sandbox.pagalu.co.mz/pagamento-ext/api/pay-ext/'.$payment_uuid);
-
-        $server_output = curl_exec ($ch);
-        //close connection
-        curl_close ($ch);
-        flush();
-
-        $json = json_decode($server_output, true);
-
-        if (json_last_error() == JSON_ERROR_NONE) {
-            if(isset($json['status'])){
-                $order_id = (int)$json['reference'];
-                $this->updateTransactionOnMagento($order_id);
-            }else {
-                echo "Nao tem status: ".$json;
-            }
-
-        }else {
-            echo "tem erros graves... ".$json;
-        }
-
-    }
+        //      $ch = curl_init();
+              /*
+              curl_setopt($ch, CURLOPT_HTTPHEA        $this->_curl->addHeader("Content-Type", "application/json");
+              $this->_curl->addHeader("Authorization"," Bearer ".$this->_helper->pagalu_api_key());
+           //   $this->_curl->locale_set_default(true);
+              $this->_curl->get($this->_helper->getPostUrl().$payment_uuid.'/');
+              
+              $body = $this->_curl->getBody();
+              $json = json_decode($body, true);DER, array('Content-Type: application/json' , $authorization ));
+              curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "GET");
+              curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
+              curl_setopt($ch, CURLOPT_POSTREDIR, 3);
+              curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+              curl_setopt($ch, CURLOPT_URL, 'http://sandbox.pagalu.co.mz/pagamento-ext/api/pay-ext/'.$payment_uuid);
+      */
+              $this->_curl->addHeader("Content-Type", "application/json");
+              $this->_curl->addHeader("Authorization"," Bearer ".$this->_helper->pagalu_api_key());
+           //   $this->_curl->locale_set_default(true);
+              $this->_curl->get($this->_helper->getPostUrl().$payment_uuid.'/');
+              
+              $body = $this->_curl->getBody();
+              $json = json_decode($body, true);
+      
+              print($body);
+      
+          //    $server_output = curl_exec ($ch);
+              //close connection
+           //   curl_close ($ch);
+            //  flush();
+      
+              //$json = json_decode($server_output, true);
+      
+              if (json_last_error() == JSON_ERROR_NONE) {
+                  if(isset($json['status'])){
+                      $order_id = (int)$json['reference'];
+                      $this->updateTransactionOnMagento($order_id);
+                  }else {
+                      echo "Nao foi possivel actualizar sua transacao";
+                  }
+      
+              }else {
+                  echo "Houve algum erro ao actualizar a transacao ";
+              }
+      
+          }
 }

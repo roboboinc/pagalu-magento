@@ -69,7 +69,13 @@ class Success extends \Magento\Framework\App\Action\Action
     public function getTransactionStatusOnPagalu($payment_uuid='') {
   //      $ch = curl_init();
         /*
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json' , $authorization ));
+        curl_setopt($ch, CURLOPT_HTTPHEA        $this->_curl->addHeader("Content-Type", "application/json");
+        $this->_curl->addHeader("Authorization"," Bearer ".$this->_helper->pagalu_api_key());
+     //   $this->_curl->locale_set_default(true);
+        $this->_curl->get($this->_helper->getPostUrl().$payment_uuid.'/');
+        
+        $body = $this->_curl->getBody();
+        $json = json_decode($body, true);DER, array('Content-Type: application/json' , $authorization ));
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "GET");
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
         curl_setopt($ch, CURLOPT_POSTREDIR, 3);
@@ -98,11 +104,11 @@ class Success extends \Magento\Framework\App\Action\Action
                 $order_id = (int)$json['reference'];
                 $this->updateTransactionOnMagento($order_id);
             }else {
-                echo "Nao tem status: ".$json;
+                echo "Nao foi possivel actualizar sua transacao";
             }
 
         }else {
-            echo "tem erros graves... ".$json;
+            echo "Houve algum erro ao actualizar a transacao ";
         }
 
     }
