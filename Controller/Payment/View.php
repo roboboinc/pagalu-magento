@@ -8,6 +8,7 @@ namespace Magento\PagaLuPaymentGateway\Controller\Payment;
 class View extends \Magento\Framework\App\Action\Action
 {
     protected $_helper;
+    protected $_curl;
     /**
      * @var \Magento\Framework\Controller\Result\JsonFactory
      */
@@ -20,11 +21,13 @@ class View extends \Magento\Framework\App\Action\Action
        \Magento\PagaLuPaymentGateway\Helper\Data $_helper,
        \Magento\Framework\App\Action\Context $context,
         \Magento\Framework\Controller\Result\RedirectFactory $resultRedirectFactory,
-       \Magento\Framework\Controller\Result\JsonFactory $resultJsonFactory)
+       \Magento\Framework\Controller\Result\JsonFactory $resultJsonFactory,
+       \Magento\Framework\HTTP\Client\Curl $curl)
     {
-       $this->_helper          = $_helper;
-       $this->resultJsonFactory = $resultJsonFactory;
-        $this->resultRedirectFactory = $resultRedirectFactory;
+        $this->_helper                  = $_helper;
+        $this->_curl                    = $curl;
+        $this->resultJsonFactory        = $resultJsonFactory;
+        $this->resultRedirectFactory    = $resultRedirectFactory;
        parent::__construct($context);}
     /**
      * View  page action
@@ -36,18 +39,35 @@ class View extends \Magento\Framework\App\Action\Action
     public function getEndpointFromPagaLu(){
 
         $result = $this->resultJsonFactory->create();
-       $data = $this->_helper->getPostData();   //['message' => $this->_helper->getPostData()];   //'Hello world!'
+        $data = $this->_helper->getPostData();   //['message' => $this->_helper->getPostData()];   //'Hello world!'
 
-        $ch = curl_init();
+        // $ch = curl_init();
         $params = json_encode($data); // Json encodes $params array
-        $authorization = "Authorization: Bearer ";
+        //$authorization = "Authorization: Bearer ";
         
-
+/*
         if (!empty($this->_helper->pagalu_api_key())) {
             $authorization .=  $this->_helper->pagalu_api_key();
         }else{
             $this->_redirect('/');
         }
+*/
+        $this->_curl->addHeader("Content-Type", "application/json");
+        $this->_curl->addHeader("Authorization"," Bearer ".$this->_helper->pagalu_api_key());
+        $this->_curl->post($this->_helper->getPostUrl(), $params);
+
+        $response = $this->_curl->getBody();
+        $resposta = json_decode($response, true);
+        return $resposta['response_url'];
+
+//        $response = $this->_curl->getBody();
+
+//        echo json_decode($response);
+
+   //     return $response['response_url'];
+
+     //   return $this->_helper->processPagaluPayment();
+        /*
         curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json' , $authorization ));
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -82,13 +102,16 @@ class View extends \Magento\Framework\App\Action\Action
             //In Case Auth details are not provided
             $resultRedirect = $this->resultRedirectFactory->create();
                 $resultRedirect->setUrl('/pagalu/payment/failure/');
-        }
+        }*/
+
+
     }
 
     public function execute()
     {
+        $response = $this->getEndpointFromPagaLu();
         $result = $this->resultJsonFactory->create();
-        $data = ['url' => $this->getEndpointFromPagaLu()];
+        $data = ['url' => $response];
 
         return $result->setData($data);
 

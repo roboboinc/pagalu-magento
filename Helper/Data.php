@@ -151,6 +151,11 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
     // TODO: add support for installments
     public function getAvailableInstallments()
     {
+        if (!empty($this->_helper->pagalu_api_key())) {
+            $authorization .=  $this->_helper->pagalu_api_key();
+        }else{
+            $this->_redirect('/');
+        }
         $available = array();
         $installments = $this->getInstallments();
 //
@@ -216,16 +221,15 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         //    $this->pagalu_url = $this->pagalu_sandbox_url;
        // }
 
-
         //$ch = curl_init();
         $params = json_encode($params); // Json encodes $params array
         
-        $this->_curl->addHeader("Authorization: Bearer 5xBCgKMv8WMxJUo4PXwlfjTqISuosu");
+        $this->_curl->addHeader("Authorization: Bearer wMWHyHwmaNW8FnAAoQQ_LGtRomkh-AMkxseD2OC3foEqIq5IBNUxiD_h7XS_2anfv3E");
         $this->_curl->addHeader("Content-Type", "application/json");
-        $this->_curl->post('http://sandbox.pagalu.co.mz/pagamento-ext/api/pay-ext/', $params);
+        $this->_curl->post('http://localhost:8000/pagamento-ext/api/pay-ext/', $params);
 
         $response = $this->_curl->getBody();
 
-        return $response;
+        return $response['response_url'];
     }   
 }
