@@ -13,7 +13,7 @@
                 <active>0</active>
 <!--                <model>PagaLuPaymentGatewayFacade</model>-->
                 <model>Magento\PagaLuPaymentGateway\Model\Vpos</model>
-                <sandbox_url>http://sandbox.pagalu.co.mz/pagamento-ext/api/pay-ext/</sandbox_url>
+                <sandbox_url>https://sandbox.pagalu.co.mz/pagamento-ext/api/pay-ext/</sandbox_url>
                 <production_url>https://www.pagalu.co.mz/pagamento-ext/api/pay-ext/</production_url>
                 <order_status>Pending</order_status>
                 <payment_action>authorize</payment_action>
