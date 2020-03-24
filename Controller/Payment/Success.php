@@ -12,7 +12,7 @@ class Success extends \Magento\Framework\App\Action\Action
     protected $_invoiceService;
     protected $_curl;
     protected $_order;
-    protected $_helper;
+    //protected $_helper;
     protected $request;
     protected $transaction;
     protected $transactionRepository;
