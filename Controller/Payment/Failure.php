@@ -100,7 +100,7 @@ class Failure extends \Magento\Framework\App\Action\Action
               if (json_last_error() == JSON_ERROR_NONE) {
                   if(isset($json['status'])){
                       $order_id = (int)$json['reference'];
-                      $this->updateTransactionOnMagento($order_id);
+                      $this->updateTransactionOnMagento($payment_uuid);
                   }else {
                       echo "Nao foi possivel actualizar sua transacao";
                   }
