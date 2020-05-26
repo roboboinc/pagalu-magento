@@ -30,6 +30,12 @@ With these steps, it should be possible to go and start testing making purchases
 
 Developed and tested against Magento ver. 2.3.3
 
+## To UPGRADE the plugin
+1 - cd into: {magento_root_directory}/app/code/magento/PagaLuPaymentGateway
+2 - git pull origin master
+3 - Run bin/magento setup:upgrade
+    3.1 - example: we used a VPS, and via ssh, we run `../../../../bin/magento setup:upgrade` from the directory we are in, or alternatively: `{magento_root_directory}/bin/magento setup:upgrade`
+4 - Test in the front-end
 
 ## Step 1: Create payment method module
 TO BE UPDATED...
